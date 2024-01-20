@@ -16,7 +16,7 @@
         }
 
         .header-section {
-            background: skyblue;
+            background: #007bff;
             padding: 15px;
         }
 
@@ -85,7 +85,7 @@
         }
 
         .header-section {
-            background: skyblue;
+            background: #007bff;
         }
 
         .categories {
@@ -119,11 +119,16 @@
             transition: 0.3s;
         }
 
-        .category-item img {
-            max-width: 100px;
-            height: auto;
-        }
+        .category-item i {
+            color: #007bff;
+        font-size: 2rem; /* Adjust the icon size as needed */
+        margin-bottom: 10px;
+    }
 
+    .category-item p {
+        font-size: 1rem; /* Adjust the text size as needed */
+        color: grey;
+    }
         .category-item:hover {
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -229,24 +234,26 @@
         </div>
         <div class="row">
             <div class="category-item">
-                <img src="xra.svg" alt="Image 1">
+                <i class="bi bi-image"></i>
                 <p>X-Ray</p>
             </div>
             <div class="category-item">
-                <img src="ct-scan.svg" alt="Image 2">
+                <i class="bi bi-camera"></i>
                 <p>CT-Scan</p>
             </div>
         </div>
+        
         <div class="row">
             <div class="category-item">
-                <img src="MRI.svg" alt="Image 3">
+                <i class="bi bi-magnet"></i>
                 <p>MRI</p>
             </div>
             <div class="category-item">
-                <img src="sonography.svg" alt="Image 4">
+                <i class="bi bi-soundwave"></i>
                 <p>Sonography</p>
             </div>
         </div>
+        
     </div>
 <div class="footer-logo text-center">
     <img src="maha.svg" alt="">
