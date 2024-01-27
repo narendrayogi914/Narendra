@@ -44,8 +44,8 @@
             padding: 10px;
             margin-bottom: 10px;
             box-sizing: border-box;
-            border: 1px solid #ccc; /* Add a clear border color */
-            border-radius: 5px; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         button {
@@ -63,6 +63,26 @@
 
         .action-buttons button {
             margin: 5px;
+        }
+
+        #imageFrame {
+            width: 300px;
+            height: 300px;
+            border: 2px solid #333;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #capturedImage {
+            width: 300px;
+            height: auto;
+            position: absolute;
+        
+        }
+
+        /* Additional style for the file input */
+        #fileInput {
+            display: none;
         }
     </style>
 </head>
@@ -96,47 +116,49 @@
         <button>Pdf/Photo Upload</button>
         <br>
         <button type="submit">Submit</button>
+
+        <!-- File input and label for automatic upload -->
+        <label for="fileInput" style="cursor: pointer;">Take Photo & Upload</label>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
     </div>
 
+    <script>
+        document.getElementById('cameraButton').addEventListener('click', function () {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    var video = document.createElement('video');
+                    video.srcObject = stream;
+                    document.body.appendChild(video);
+                    video.play();
+
+                    var imageCapture = new ImageCapture(stream.getVideoTracks()[0]);
+
+                    function capturePhoto() {
+                        imageCapture.takePhoto()
+                            .then(function (blob) {
+                                var img = document.getElementById('capturedImage');
+                                img.src = URL.createObjectURL(blob);
+
+                                video.srcObject.getTracks().forEach(track => track.stop());
+                                document.body.removeChild(video);
+
+                                // Upload the photo to the input file
+                                var fileInput = document.getElementById('fileInput');
+                                var file = new File([blob], 'captured_photo.jpg', { type: 'image/jpeg' });
+                                fileInput.files = [file];
+                            })
+                            .catch(function (error) {
+                                console.error('Error capturing photo:', error);
+                            });
+                    }
+
+                    document.getElementById('cameraButton').addEventListener('click', capturePhoto);
+                })
+                .catch(function (error) {
+                    console.error('Error accessing the camera:', error);
+                });
+        });
+    </script>
+
 </body>
-
-<script>
-    document.getElementById('cameraButton').addEventListener('click', function () {
-        // Try to access the device camera
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-              
-
-                // Create an ImageCapture object
-                var imageCapture = new ImageCapture(stream.getVideoTracks()[0]);
-
-                // Function to capture a photo
-                function capturePhoto() {
-                    imageCapture.takePhoto()
-                        .then(function (blob) {
-                            // Display the captured photo
-                            var img = document.getElementById('capturedImage');
-                            img.src = URL.createObjectURL(blob);
-
-                            // Stop the video stream
-                            video.srcObject.getTracks().forEach(track => track.stop());
-
-                            // Remove the video element
-                            document.body.removeChild(video);
-                        })
-                        .catch(function (error) {
-                            console.error('Error capturing photo:', error);
-                        });
-                }
-
-                // Attach the capturePhoto function as the click event listener
-                document.getElementById('cameraButton').addEventListener('click', capturePhoto);
-            })
-            .catch(function (error) {
-                console.error('Error accessing the camera:', error);
-            });
-    });
-</script>
-
-
 </html>
