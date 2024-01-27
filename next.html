@@ -75,17 +75,14 @@
         }
 
         #capturedImage {
-            width: 300px;
+            width: 50px;
             height: auto;
-            position: absolute;
-            margin-left: 100px;
+            /* position: absolute; */
+            
       
         }
 
-        /* Additional style for the file input */
-        #fileInput {
-            display: none;
-        }
+       
     </style>
 </head>
 <body>
@@ -113,7 +110,7 @@
         <button>Edit</button>
         <button id="openCamera">Take Photo</button>
         <img id="capturedImage" alt="Captured Photo">
-        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        <input type="file" id="fileInput" accept="image/*">
         
         <br>
         <button>X-ray Upload</button>
@@ -152,7 +149,7 @@
             cameraModal.show();
 
             // Try to access the device camera
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
                 .then(function (stream) {
                     var video = document.getElementById('cameraVideo');
                     video.srcObject = stream;
@@ -189,6 +186,7 @@
                     console.error('Error accessing the camera:', error);
                 });
         });
+
     </script>
 
 </body>
