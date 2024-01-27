@@ -78,9 +78,8 @@
             width: 300px;
             height: auto;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            margin-left: 100px;
+      
         }
 
         /* Additional style for the file input */
@@ -114,6 +113,8 @@
         <button>Edit</button>
         <button id="openCamera">Take Photo</button>
         <img id="capturedImage" alt="Captured Photo">
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        
         <br>
         <button>X-ray Upload</button>
         <button>Pdf/Photo Upload</button>
@@ -166,9 +167,12 @@
                                 // Display the captured photo
                                 var img = document.getElementById('capturedImage');
                                 img.src = URL.createObjectURL(blob);
+                             
 
                                 // Stop the video stream
                                 video.srcObject.getTracks().forEach(track => track.stop());
+                                var fileInput = document.getElementById('fileInput');
+                    
 
                                 // Close the Bootstrap modal
                                 cameraModal.hide();
