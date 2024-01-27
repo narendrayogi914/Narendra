@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Report Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #3498db;
+            padding: 10px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-icon {
+            margin-left: 10px;
+        }
+
+        .user-profile {
+            margin-right: 10px;
+        }
+
+        .search-box {
+            text-align: center;
+            margin: 10px;
+        }
+
+        form {
+            margin: 20px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc; /* Add a clear border color */
+            border-radius: 5px; 
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .action-buttons button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="menu-icon">
+            <i class="bi bi-list"></i>
+        </div>
+        Navbar
+        <div class="user-profile">
+            <i class="bi bi-person-circle"></i>
+        </div>
+    </div>
+
+    <form>
+        <input type="text" placeholder="Patient Name">
+        <input type="text" placeholder="Age (Years)">
+        <input type="text" placeholder="Sex">
+        <input type="text" placeholder="X-ray No">
+
+        <button type="submit">Report</button>
+    </form>
+
+    <div class="action-buttons">
+        <button>Edit</button>
+        <button id="cameraButton">Take Photo</button>
+        <img id="capturedImage" alt="Captured Photo">
+        <br>
+        <button>X-ray Upload</button>
+        <button>Pdf/Photo Upload</button>
+        <br>
+        <button type="submit">Submit</button>
+    </div>
+
+</body>
+
+<script>
+    document.getElementById('cameraButton').addEventListener('click', function () {
+        // Try to access the device camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+              
+
+                // Create an ImageCapture object
+                var imageCapture = new ImageCapture(stream.getVideoTracks()[0]);
+
+                // Function to capture a photo
+                function capturePhoto() {
+                    imageCapture.takePhoto()
+                        .then(function (blob) {
+                            // Display the captured photo
+                            var img = document.getElementById('capturedImage');
+                            img.src = URL.createObjectURL(blob);
+
+                            // Stop the video stream
+                            video.srcObject.getTracks().forEach(track => track.stop());
+
+                            // Remove the video element
+                            document.body.removeChild(video);
+                        })
+                        .catch(function (error) {
+                            console.error('Error capturing photo:', error);
+                        });
+                }
+
+                // Attach the capturePhoto function as the click event listener
+                document.getElementById('cameraButton').addEventListener('click', capturePhoto);
+            })
+            .catch(function (error) {
+                console.error('Error accessing the camera:', error);
+            });
+    });
+</script>
+
+
+</html>
