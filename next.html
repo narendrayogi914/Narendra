@@ -11,6 +11,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            
         }
 
         .navbar {
@@ -23,17 +24,33 @@
         }
 
         .menu-icon {
+
             margin-left: 10px;
+        }
+        .menu-icon a{
+            color: white;
+            font-size: 35px;
         }
 
         .user-profile {
             margin-right: 10px;
         }
 
+        .user-profile a{
+            color: white;
+            font-size: 35px;
+
+        }
         .search-box {
             text-align: center;
-            margin: 10px;
+           
+        
         }
+        .search-box input{
+            border-radius: 10px;
+            border: none;
+        }
+        
 
         form {
             margin: 20px;
@@ -51,7 +68,9 @@
 
         button {
             background-color: #4caf50;
-            color: white;
+            color: black;
+            font-weight:bold;
+            font-size: large;
             padding: 10px;
             border: none;
             cursor: pointer;
@@ -65,23 +84,29 @@
         .action-buttons button {
             margin: 5px;
         }
-
-        #imageFrame {
-            width: 300px;
-            height: 300px;
-            border: 2px solid #333;
-            overflow: hidden;
-            position: relative;
+        .footer {
+           
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: skyblue; /* Choose a color for the footer */
+            padding: 10px;
+            text-align: center;
+            color: #fff; /* Text color for the icons */
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+           
         }
 
-        #capturedImage {
-            width: 50px;
-            height: auto;
-            /* position: absolute; */
-            
-      
+        .footer a {
+            color: #000;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
+        
        
     </style>
 </head>
@@ -89,11 +114,14 @@
 
     <div class="navbar">
         <div class="menu-icon">
-            <i class="bi bi-list"></i>
+            <a href=""><i class="bi bi-list"></i></a>
         </div>
-        Navbar
+        <div class="search-box">
+
+                <input type="search" placeholder="Product,Store etc">
+        </div>
         <div class="user-profile">
-            <i class="bi bi-person-circle"></i>
+           <a href=""> <i class="bi bi-person-circle"></i></a>
         </div>
     </div>
 
@@ -102,92 +130,30 @@
         <input type="text" placeholder="Age (Years)">
         <input type="text" placeholder="Sex">
         <input type="text" placeholder="X-ray No">
-
         <button type="submit">Report</button>
-    </form>
 
+    </form>
+    
     <div class="action-buttons">
-        <button>Edit</button>
-        <button id="openCamera">Take Photo</button>
-        <img id="capturedImage" alt="Captured Photo">
-        <input type="file" id="fileInput" accept="image/*">
-        
+        <button>Edit</button><br>
+        <button class="file-select-button"><input type="file" name="" id="" placeholder="Take Photo">Take Photo</button>
+      
         <br>
         <button>X-ray Upload</button>
         <button>Pdf/Photo Upload</button>
         <br>
-        <button type="submit">Submit</button>
+        <button type="submit" style="border-radius: 10px; background: #000; color: gray;">Upload & Submit</button>
+    </div>
+    <div class="footer">
+        <a href="#"><i class="bi bi-house-door-fill"></i> Home</a>
+        <a href="#"><i class="bi bi-person"></i> Doctors</a>
+        <a href="#"><i class="bi bi-calendar"></i> Appointment</a>
+        <a href="#"><i class="bi bi-person-circle"></i> Profile</a>
     </div>
 
-    <!-- Bootstrap modal for camera -->
-    <div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cameraModalLabel">Capture Photo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <video id="cameraVideo" width="100%" height="auto"></video>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="captureButton">Capture</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('openCamera').addEventListener('click', function () {
-            // Show the Bootstrap modal
-            var cameraModal = new bootstrap.Modal(document.getElementById('cameraModal'), {
-                backdrop: 'static',
-                keyboard: false
-            });
-            cameraModal.show();
-
-            // Try to access the device camera
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(function (stream) {
-                    var video = document.getElementById('cameraVideo');
-                    video.srcObject = stream;
-                    video.play();
-
-                    var imageCapture = new ImageCapture(stream.getVideoTracks()[0]);
-
-                    // Function to capture a photo
-                    function capturePhoto() {
-                        imageCapture.takePhoto()
-                            .then(function (blob) {
-                                // Display the captured photo
-                                var img = document.getElementById('capturedImage');
-                                img.src = URL.createObjectURL(blob);
-                             
-
-                                // Stop the video stream
-                                video.srcObject.getTracks().forEach(track => track.stop());
-                                var fileInput = document.getElementById('fileInput');
-                    
-
-                                // Close the Bootstrap modal
-                                cameraModal.hide();
-                            })
-                            .catch(function (error) {
-                                console.error('Error capturing photo:', error);
-                            });
-                    }
-
-                    // Attach the capturePhoto function as the click event listener for the Capture button
-                    document.getElementById('captureButton').addEventListener('click', capturePhoto);
-                })
-                .catch(function (error) {
-                    console.error('Error accessing the camera:', error);
-                });
-        });
-
-    </script>
-
+    
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </html>
