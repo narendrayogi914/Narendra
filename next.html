@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Report Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
@@ -77,7 +78,9 @@
             width: 300px;
             height: auto;
             position: absolute;
-        
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         /* Additional style for the file input */
@@ -109,50 +112,74 @@
 
     <div class="action-buttons">
         <button>Edit</button>
-        <button id="cameraButton">Take Photo</button>
+        <button id="openCamera">Take Photo</button>
         <img id="capturedImage" alt="Captured Photo">
         <br>
         <button>X-ray Upload</button>
         <button>Pdf/Photo Upload</button>
         <br>
         <button type="submit">Submit</button>
-
-        <!-- File input and label for automatic upload -->
-        <label for="fileInput" style="cursor: pointer;">Take Photo & Upload</label>
-        <input type="file" id="fileInput" accept="image/*" style="display: none;">
     </div>
 
+    <!-- Bootstrap modal for camera -->
+    <div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cameraModalLabel">Capture Photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <video id="cameraVideo" width="100%" height="auto"></video>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="captureButton">Capture</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('cameraButton').addEventListener('click', function () {
+        document.getElementById('openCamera').addEventListener('click', function () {
+            // Show the Bootstrap modal
+            var cameraModal = new bootstrap.Modal(document.getElementById('cameraModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            cameraModal.show();
+
+            // Try to access the device camera
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function (stream) {
-                    var video = document.createElement('video');
+                    var video = document.getElementById('cameraVideo');
                     video.srcObject = stream;
-                    document.body.appendChild(video);
                     video.play();
 
                     var imageCapture = new ImageCapture(stream.getVideoTracks()[0]);
 
+                    // Function to capture a photo
                     function capturePhoto() {
                         imageCapture.takePhoto()
                             .then(function (blob) {
+                                // Display the captured photo
                                 var img = document.getElementById('capturedImage');
                                 img.src = URL.createObjectURL(blob);
 
+                                // Stop the video stream
                                 video.srcObject.getTracks().forEach(track => track.stop());
-                                document.body.removeChild(video);
 
-                                // Upload the photo to the input file
-                                var fileInput = document.getElementById('fileInput');
-                                var file = new File([blob], 'captured_photo.jpg', { type: 'image/jpeg' });
-                                fileInput.files = [file];
+                                // Close the Bootstrap modal
+                                cameraModal.hide();
                             })
                             .catch(function (error) {
                                 console.error('Error capturing photo:', error);
                             });
                     }
 
-                    document.getElementById('cameraButton').addEventListener('click', capturePhoto);
+                    // Attach the capturePhoto function as the click event listener for the Capture button
+                    document.getElementById('captureButton').addEventListener('click', capturePhoto);
                 })
                 .catch(function (error) {
                     console.error('Error accessing the camera:', error);
